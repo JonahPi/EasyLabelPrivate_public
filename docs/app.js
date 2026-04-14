@@ -490,8 +490,8 @@ function showSetupPage() {
         if (mqttClient) mqttClient.end(true);
         mqttClient  = null;
         isConnected = false;
-        initMQTT(username, key);
         showHome();
+        initMQTT(username, key);
     });
 }
 
