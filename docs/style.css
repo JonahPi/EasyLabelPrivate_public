@@ -1,0 +1,260 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --primary:       #1565c0;
+    --primary-light: #1976d2;
+    --success:       #2e7d32;
+    --error:         #c62828;
+    --bg:            #f0f4f8;
+    --card-bg:       #ffffff;
+    --text:          #212121;
+    --text-secondary:#757575;
+    --border:        #e0e0e0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────── */
+header {
+    background: var(--primary);
+    color: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1;
+}
+.back-btn:active { background: rgba(255,255,255,0.2); }
+.hidden { display: none !important; }
+
+.settings-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1;
+    margin-left: auto;
+}
+.settings-btn:active { background: rgba(255,255,255,0.2); }
+
+#page-title {
+    flex: 1;
+    font-size: 20px;
+    font-weight: 500;
+    min-width: 0;
+}
+.status-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ef9a9a;
+    flex-shrink: 0;
+    transition: background 0.4s;
+}
+.status-dot.ok { background: #a5d6a7; }
+
+.printer-status {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.3px;
+}
+.printer-status.online  { background: rgba(165,214,167,0.3); color: #c8e6c9; }
+.printer-status.offline { background: rgba(229,115,115,0.4); color: #ffcdd2; }
+
+/* ── Status bar ──────────────────────────────────── */
+.status-bar {
+    background: #e3f2fd;
+    color: #1565c0;
+    font-size: 13px;
+    padding: 6px 16px;
+    text-align: center;
+    min-height: 28px;
+    transition: background 0.3s, color 0.3s;
+}
+.status-bar.err { background: #ffebee; color: var(--error); }
+.status-bar.ok  { background: #e8f5e9; color: var(--success); }
+
+/* ── Main content ────────────────────────────────── */
+main {
+    padding: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ── Home grid ───────────────────────────────────── */
+.home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+}
+.label-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    text-align: center;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    user-select: none;
+}
+.label-btn:active {
+    border-color: var(--primary-light);
+    box-shadow: 0 3px 10px rgba(21,101,192,0.2);
+    transform: scale(0.98);
+}
+
+/* ── Printer warning ─────────────────────────────── */
+.printer-warning {
+    background: #fff3e0;
+    color: #e65100;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+/* ── Form card ───────────────────────────────────── */
+.card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group:last-of-type { margin-bottom: 4px; }
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 16px;
+    color: var(--text);
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: inherit;
+    -webkit-appearance: none;
+}
+input[type="number"] { width: 120px; }
+input[type="date"]   { width: 180px; }
+input:focus, textarea:focus {
+    border-color: var(--primary-light);
+    background: #fff;
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+/* ── Primary button ──────────────────────────────── */
+.btn-primary {
+    width: 100%;
+    background: var(--primary-light);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.15s, transform 0.1s;
+    font-family: inherit;
+}
+.btn-primary:active  { background: var(--primary); transform: scale(0.99); }
+.btn-primary:disabled { background: #bdbdbd; cursor: not-allowed; transform: none; }
+
+/* ── Feedback ─────────────────────────────────────── */
+.feedback {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.4;
+    display: none;
+}
+.feedback.success { background: #e8f5e9; color: var(--success); display: block; }
+.feedback.error   { background: #ffebee; color: var(--error);   display: block; }
+
+/* ── Release page ─────────────────────────────────── */
+.release-card {
+    text-align: center;
+    padding: 48px 20px;
+}
+.release-icon  { font-size: 72px; margin-bottom: 16px; }
+.release-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.release-sub   { font-size: 15px; color: var(--text-secondary); }
+
+.spinner {
+    width: 52px;
+    height: 52px;
+    border: 5px solid var(--border);
+    border-top-color: var(--primary-light);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+    margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

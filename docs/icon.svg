@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="96" fill="#1565c0"/>
+
+  <!-- Printer body -->
+  <rect x="112" y="200" width="288" height="160" rx="24" fill="white"/>
+
+  <!-- Printer top slot (paper feed) -->
+  <rect x="160" y="152" width="192" height="64" rx="12" fill="white"/>
+
+  <!-- Label coming out the bottom -->
+  <rect x="176" y="336" width="160" height="100" rx="8" fill="white"/>
+
+  <!-- Label lines (printed text suggestion) -->
+  <rect x="196" y="356" width="120" height="10" rx="5" fill="#1976d2"/>
+  <rect x="196" y="376" width="88"  height="8"  rx="4" fill="#90caf9"/>
+  <rect x="196" y="394" width="100" height="8"  rx="4" fill="#90caf9"/>
+
+  <!-- Printer output slot line -->
+  <rect x="128" y="322" width="256" height="12" rx="6" fill="#1565c0"/>
+
+  <!-- Small indicator light on printer -->
+  <circle cx="330" cy="260" r="14" fill="#a5d6a7"/>
+</svg>
