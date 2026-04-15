@@ -192,6 +192,7 @@ const LABEL_TYPES = {
             {
                 id: 'geschmack', label: 'Geschmack', type: 'text',
                 required: true, maxLength: 100, placeholder: 'Erdbeer',
+                list: ['Erdbeer', 'Kirsche', 'Aprikose', 'Beeren', 'Holunder', 'Quitten', 'Pflaume', 'Orange'],
             },
             {
                 id: 'received_from', label: 'Von (optional)', type: 'text',
@@ -216,8 +217,22 @@ const LABEL_TYPES = {
         title: 'Wein',
         fields: [
             {
-                id: 'geschmack', label: 'Geschmack', type: 'text',
-                required: true, maxLength: 100, placeholder: 'Barolo 2019',
+                id: 'weintyp', label: 'Weintyp', type: 'select',
+                options: [
+                    { value: 'Rot',   label: 'Rotwein' },
+                    { value: 'Weiss', label: 'Weisswein' },
+                    { value: 'Rosé',  label: 'Rosé' },
+                ],
+                defaultValue: 'Rot',
+            },
+            {
+                id: 'weinart', label: 'Geschmack', type: 'select',
+                options: [
+                    { value: 'trocken',      label: 'Trocken' },
+                    { value: 'halbtrocken',  label: 'Halbtrocken' },
+                    { value: 'lieblich',     label: 'Lieblich' },
+                ],
+                defaultValue: 'trocken',
             },
             {
                 id: 'received_from', label: 'Von (optional)', type: 'text',
@@ -231,7 +246,7 @@ const LABEL_TYPES = {
         buildPayload: (f) => ({
             label_type: 'wine',
             data: {
-                geschmack: f.geschmack.trim(),
+                geschmack: `${f.weintyp}, ${f.weinart}`,
                 ...(f.received_from.trim() && { received_from: f.received_from.trim() }),
                 received_on: f.received_on,
             },
