@@ -5,7 +5,10 @@ const AIO_BROKER = 'wss://io.adafruit.com:443/mqtt';
 let mqttClient  = null;
 let isConnected = false;
 let TOPIC_DATA   = null;
+let TOPIC_ACK    = null;
 let TOPIC_STATUS = null;
+
+let _ackHandler = null; // { resolve, reject, timer }
 
 // ── Credentials ───────────────────────────────────────────────────────────────
 
@@ -23,6 +26,7 @@ function saveCredentials(username, key) {
 
 function buildTopics(username) {
     TOPIC_DATA   = `${username}/feeds/easylabelprivate.data`;
+    TOPIC_ACK    = `${username}/feeds/easylabelprivate.ack`;
     TOPIC_STATUS = `${username}/feeds/easylabelprivate.status`;
 }
 
@@ -237,6 +241,7 @@ function initMQTT(username, key) {
         setStatusDot(true);
         setStatusBar('Verbunden', 'ok');
         mqttClient.subscribe(TOPIC_STATUS, { qos: 1 });
+        mqttClient.subscribe(TOPIC_ACK,    { qos: 1 });
     });
     mqttClient.on('offline', () => {
         isConnected = false;
@@ -247,10 +252,16 @@ function initMQTT(username, key) {
         setStatusBar('Verbindungsfehler: ' + e.message, 'err');
     });
     mqttClient.on('message', (topic, message) => {
-        if (topic !== TOPIC_STATUS) return;
         try {
             const payload = JSON.parse(message.toString());
-            setPrinterStatus(payload.printer === 'online');
+            if (topic === TOPIC_STATUS) {
+                setPrinterStatus(payload.printer === 'online');
+            } else if (topic === TOPIC_ACK && _ackHandler) {
+                const handler = _ackHandler;
+                _ackHandler = null;
+                clearTimeout(handler.timer);
+                handler.resolve(payload);
+            }
         } catch (_) {}
     });
 }
@@ -263,6 +274,16 @@ function waitForConnect(timeoutMs = 15000) {
             timeoutMs,
         );
         mqttClient.once('connect', () => { clearTimeout(timer); resolve(); });
+    });
+}
+
+function waitForAck(timeoutMs = 30000) {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            _ackHandler = null;
+            reject(new Error('timeout'));
+        }, timeoutMs);
+        _ackHandler = { resolve, reject, timer };
     });
 }
 
@@ -440,10 +461,17 @@ function showLabelPage(type) {
                 await waitForConnect();
             }
             const payload = cfg.buildPayload(formData);
+            const ackPromise = waitForAck(30000);
             await mqttPublish(TOPIC_DATA, payload);
+            btn.textContent = 'Warte auf Bestätigung…';
+            await ackPromise;
             showFeedback('✓ Druckauftrag gesendet!', true);
         } catch (err) {
-            showFeedback('Fehler: ' + err.message, false);
+            if (err.message === 'timeout') {
+                showFeedback('Keine Antwort vom Raspberry — ist er eingeschaltet?', false);
+            } else {
+                showFeedback('Fehler: ' + err.message, false);
+            }
         } finally {
             btn.disabled = false;
             btn.textContent = 'Drucken';
