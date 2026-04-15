@@ -103,7 +103,7 @@ const LABEL_TYPES = {
     },
 
     address: {
-        title: 'Adressetikett',
+        title: 'Empfänger',
         fields: [
             {
                 id: 'company', label: 'Firma (optional)', type: 'text',
@@ -157,7 +157,7 @@ const LABEL_TYPES = {
     },
 
     senderlabel: {
-        title: 'Absenderetikett',
+        title: 'Absender',
         fields: [
             {
                 id: 'first', label: 'Vorname', type: 'text',
@@ -166,6 +166,22 @@ const LABEL_TYPES = {
         ],
         buildPayload: (f) => ({
             label_type: 'senderlabel',
+            data: { first: f.first.trim() },
+        }),
+    },
+
+    eigentum: {
+        title: 'Eigentum',
+        fields: [
+            {
+                id: 'first', label: 'Vorname', type: 'text',
+                required: true, maxLength: 50,
+                list: ['Bernd'],
+                placeholder: 'Bernd',
+            },
+        ],
+        buildPayload: (f) => ({
+            label_type: 'eigentum',
             data: { first: f.first.trim() },
         }),
     },
@@ -222,6 +238,12 @@ const LABEL_TYPES = {
         }),
     },
 };
+
+const LABEL_GROUPS = [
+    { title: 'Allgemein',    color: '#1565c0', types: ['freetext', 'qrcode'] },
+    { title: 'Post',         color: '#0288d1', types: ['address', 'senderlabel'] },
+    { title: 'Beschriftung', color: '#283593', types: ['marmalade', 'wine', 'eigentum', 'filament'] },
+];
 
 // ── MQTT ──────────────────────────────────────────────────────────────────────
 
@@ -403,11 +425,19 @@ function escHTML(s) {
 function showHome() {
     setPageTitle('EasyLabel Home');
     showBack(false);
-    const buttons = Object.entries(LABEL_TYPES)
-        .map(([type, cfg]) =>
-            `<button class="label-btn" data-type="${escAttr(type)}">${escHTML(cfg.title)}</button>`)
-        .join('');
-    setApp(`<div class="home-grid">${buttons}</div>`);
+    const html = LABEL_GROUPS.map(group => {
+        const buttons = group.types.map(type => {
+            const cfg = LABEL_TYPES[type];
+            return `<button class="label-btn"
+                style="--btn-bg:${escAttr(group.color)}"
+                data-type="${escAttr(type)}">${escHTML(cfg.title)}</button>`;
+        }).join('');
+        return `<div class="label-group">
+            <h3 class="group-title">${escHTML(group.title)}</h3>
+            <div class="home-grid">${buttons}</div>
+        </div>`;
+    }).join('');
+    setApp(`<div class="home-groups">${html}</div>`);
     document.querySelectorAll('.label-btn').forEach(btn => {
         btn.addEventListener('click', () => showLabelPage(btn.dataset.type));
     });
